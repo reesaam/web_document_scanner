@@ -1,8 +1,10 @@
 enum ScannerStatus {
   initializing,
+  cameraInitializing,
   initialized,
   scanning,
-  scanned(dispose: true),
+  scanned(),
+  disposing(dispose: true),
   closed(dispose: true),
   unknown,
   error(dispose: true);
