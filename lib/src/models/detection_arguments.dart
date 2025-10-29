@@ -20,7 +20,7 @@ class DetectionArguments {
   final int whiteAreaMax;
 }
 
-const int getDefaultStreamCaptureDelay = 100;
+const int getDefaultStreamCaptureDelay = 2;
 const int getDefaultLuminanceLimit = 200;
 const int getDefaultFillRatioMin = 60;
 const int getDefaultFillRatioMax = 90;

@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 
 import 'scanner_controller.dart';
 import 'resources/resources.dart';
+import 'utils/document_border_painter.dart';
 import 'utils/logger.dart';
 
 class WebDocumentScanner extends StatefulWidget {
   final ScannerController scannerController;
+  final bool showDocBorder;
   final Widget? child;
 
   const WebDocumentScanner(
     this.scannerController, {
     super.key,
     this.child,
+    this.showDocBorder = false,
   });
 
   @override
@@ -29,6 +32,12 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
       debugLog('Scanner Status: ${widget.scannerController.status.value.name}');
       (widget.scannerController.status.value.dispose ?? false) ? disposeError() : null;
     });
+    widget.scannerController.rect.addListener(
+      () {
+        debugLog('Rect: ${widget.scannerController.rect.value}');
+        setState(() {});
+      },
+    );
     if (widget.scannerController.value.isInitialized) {
       widget.scannerController.status.value = ScannerStatus.initialized;
     } else {
@@ -39,6 +48,19 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
   }
 
   @override
+  Widget build(BuildContext context) => Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CameraPreview(widget.scannerController),
+            if (widget.scannerController.rect.value != Rect.zero)
+              DocumentBorderPainterWidget(widget.scannerController.rect.value!),
+            // if (widget.child != null) widget.child!,
+          ],
+        ),
+      );
+
+  @override
   void dispose() async {
     widget.scannerController.status.value = ScannerStatus.disposing;
     await widget.scannerController.pausePreview();
@@ -46,17 +68,6 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
     widget.scannerController.status.value = ScannerStatus.closed;
     super.dispose();
   }
-
-  @override
-  Widget build(BuildContext context) => Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CameraPreview(widget.scannerController),
-            if (widget.child != null) widget.child!,
-          ],
-        ),
-      );
 
   void disposeError({String? message}) {
     dispose();

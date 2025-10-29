@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'document_scanner.dart';
 import 'extensions/extensions.dart';
@@ -12,6 +13,7 @@ import 'utils/logger.dart';
 class ScannerController extends CameraController {
   final DetectionArguments? detectionArguments;
   ValueNotifier<ScannerStatus> status = ValueNotifier(ScannerStatus.closed);
+  ValueNotifier<Rect> rect = ValueNotifier(Rect.zero);
 
   ScannerController({
     required this.description,
@@ -42,28 +44,30 @@ class ScannerController extends CameraController {
         final convertedImage = await capturedImage.toImageFormat;
         releaseLog('Picture Taken ${DateTime.now().toLocal()}');
         if (convertedImage != null) {
-          Future.delayed(Duration(seconds: arguments.streamCaptureDelay), () {});
-          detectionResponse = analyze(
-            detectionArguments: arguments,
-            image: convertedImage,
-            file: capturedImage,
-          );
-          if (detectionResponse?.isFound ?? false) {
-            releaseLog('Document Found');
-            releaseLog('Changing Scanner Status');
-            final imageData = await capturedImage.readAsBytes();
-            final imageFile = XFile.fromData(imageData);
-            debugLog('response name: ${detectionResponse?.name}');
-            debugLog('response path: ${detectionResponse?.path}');
-            debugLog('response length: ${await detectionResponse?.originalImageFile?.length()}');
-            detectionResponse = detectionResponse?.copyWith(
-              // name: imageFile.name,
-              // path: imageFile.path,
-              // originalImageFile: imageFile,
-              originalImageData: imageData,
+          Future.delayed(Duration(seconds: arguments.streamCaptureDelay), () async {
+            detectionResponse = analyze(
+              detectionArguments: arguments,
+              image: convertedImage,
+              file: capturedImage,
             );
-            status.value = ScannerStatus.scanned;
-          }
+            rect.value = getCorners(convertedImage);
+            if (detectionResponse?.isFound ?? false) {
+              releaseLog('Document Found');
+              releaseLog('Changing Scanner Status');
+              final imageData = await capturedImage.readAsBytes();
+              final imageFile = XFile.fromData(imageData);
+              debugLog('response name: ${detectionResponse?.name}');
+              debugLog('response path: ${detectionResponse?.path}');
+              debugLog('response length: ${await detectionResponse?.originalImageFile?.length()}');
+              detectionResponse = detectionResponse?.copyWith(
+                name: imageFile.name,
+                path: imageFile.path,
+                originalImageFile: imageFile,
+                originalImageData: imageData,
+              );
+              status.value = ScannerStatus.scanned;
+            }
+          });
         }
         releaseLog('status: ${status.value}');
         return status.value == ScannerStatus.scanning;
@@ -73,6 +77,7 @@ class ScannerController extends CameraController {
       path: detectionResponse?.path,
       imageFile: detectionResponse?.originalImageFile,
       imageData: detectionResponse?.originalImageData,
+      rect: detectionResponse?.rect,
     );
     return scannerResponse;
   }

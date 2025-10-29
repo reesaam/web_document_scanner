@@ -13,6 +13,16 @@ import 'utils/logger.dart';
 DetectionModel _document = DetectionModel();
 DetectionArguments _detectionArguments = DetectionArguments();
 
+Rect getCorners(ScanImageFormat image) {
+  final grayscale = img.grayscale(image);
+  final edges = img.sobel(grayscale);
+  final resizedEdges = img.copyResize(edges, height: (edges.height / 4).toInt(), width: (edges.width / 4).toInt());
+  debugLog('Resize ${edges.height}x${edges.width} to ${resizedEdges.height}x${resizedEdges.width}');
+  final result = _checkIsDoc(resizedEdges);
+  debugLog('rect: ${result != Rect.zero}');
+  return result;
+}
+
 DetectionModel analyze({required DetectionArguments detectionArguments, required ScanImageFormat image, XFile? file}) {
   _detectionArguments = detectionArguments;
   releaseLog('Analyze Started - ${image.data?.length}');
@@ -22,7 +32,7 @@ DetectionModel analyze({required DetectionArguments detectionArguments, required
   debugLog('Resize ${edges.height}x${edges.width} to ${resizedEdges.height}x${resizedEdges.width}');
   final result = _checkIsDoc(resizedEdges);
   debugLog('checkIsDoc: $result');
-  if (result != null) {
+  if (result != Rect.zero) {
     releaseLog('Image Scanned');
     debugLog('Image Scanned Size: ${_document.originalImageData?.length}');
     debugLog('Resized Image Scanned Size: ${resizedEdges.length}');
@@ -44,7 +54,7 @@ DetectionModel analyze({required DetectionArguments detectionArguments, required
   return _document;
 }
 
-Rect? _checkIsDoc(ScanImageFormat edges) {
+Rect _checkIsDoc(ScanImageFormat edges) {
   debugLog('Checking Doc Started');
   List<Offset> corners = List<Offset>.empty(growable: true);
   int width = edges.width;
@@ -64,13 +74,24 @@ Rect? _checkIsDoc(ScanImageFormat edges) {
         if (y < minY) minY = y;
         if (y > maxY) maxY = y;
 
-        final isCorner = _cornerDetector(image: edges, x: x, y: y);
-        if (isCorner) corners.add(Offset(x.toDouble(), y.toDouble()));
+        // final bool isCorner = _cornerDetector(image: edges, x: x, y: y);
+        // if (isCorner) {
+        //   final Offset corner = Offset(x.toDouble(), y.toDouble());
+        //   corners.add(corner);
+        //   debugLog('Corner ${corners.length}: $corner');
+        // }
       }
     }
   }
+
+  corners
+    ..add(Offset(minX.toDouble(), minY.toDouble()))
+    ..add(Offset(minX.toDouble(), maxY.toDouble()))
+    ..add(Offset(maxX.toDouble(), minY.toDouble()))
+    ..add(Offset(maxX.toDouble(), maxY.toDouble()));
   _document = _document.copyWith(corners: corners);
-  if (whitePixelCount == 0) return null;
+
+  if (whitePixelCount == 0) return Rect.zero;
 
   final docWidth = maxX - minX;
   final docHeight = maxY - minY;
@@ -106,7 +127,7 @@ Rect? _checkIsDoc(ScanImageFormat edges) {
     releaseLog('==> Scanner FINAL DECISION TRUE');
     rect = Rect.fromLTWH(minX.toDouble(), minY.toDouble(), docWidth.toDouble(), docHeight.toDouble());
   }
-  return rect;
+  return rect ?? Rect.zero;
 }
 
 bool _cornerDetector({required ScanImageFormat image, required int x, required int y}) {
