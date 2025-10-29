@@ -17,7 +17,7 @@ class DetectionModel {
     this.croppedEdgesData,
     this.corners,
     this.size,
-    this.rect,
+    this.rect = Rect.zero,
     this.documentDetails,
   });
 
@@ -31,7 +31,7 @@ class DetectionModel {
   final Uint8List? croppedEdgesData;
   final List<Offset>? corners;
   final Size? size;
-  final Rect? rect;
+  final Rect rect;
   final DetectionDocumentDetail? documentDetails;
 
   DetectionModel copyWith({

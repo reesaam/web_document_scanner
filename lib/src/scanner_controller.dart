@@ -40,35 +40,36 @@ class ScannerController extends CameraController {
     DetectionArguments arguments = detectionArguments ?? DetectionArguments();
     await Future.doWhile(
       () async {
+        await Future.delayed(Duration(seconds: arguments.streamCaptureDelay));
         final capturedImage = await takePicture();
         final convertedImage = await capturedImage.toImageFormat;
         releaseLog('Picture Taken ${DateTime.now().toLocal()}');
         if (convertedImage != null) {
-          Future.delayed(Duration(seconds: arguments.streamCaptureDelay), () async {
-            detectionResponse = analyze(
-              detectionArguments: arguments,
-              image: convertedImage,
-              file: capturedImage,
+          /// ANALYZE
+          detectionResponse = analyze(
+            detectionArguments: arguments,
+            image: convertedImage,
+            file: capturedImage,
+          );
+          rect.value = detectionResponse?.rect ?? Rect.zero;
+          if (detectionResponse?.isFound ?? false) {
+            releaseLog('Document Found');
+            releaseLog('Changing Scanner Status');
+            final imageData = await capturedImage.readAsBytes();
+            final imageFile = XFile.fromData(detectionResponse!.croppedEdgesData!);
+            debugLog('response name: ${detectionResponse?.name}');
+            debugLog('response path: ${detectionResponse?.path}');
+            debugLog('response length: ${await detectionResponse?.originalImageFile?.length()}');
+            detectionResponse = detectionResponse?.copyWith(
+              name: imageFile.name,
+              path: imageFile.path,
+              originalImageFile: imageFile,
+              originalImageData: imageData,
             );
-            rect.value = getCorners(convertedImage);
-            if (detectionResponse?.isFound ?? false) {
-              releaseLog('Document Found');
-              releaseLog('Changing Scanner Status');
-              final imageData = await capturedImage.readAsBytes();
-              final imageFile = XFile.fromData(imageData);
-              debugLog('response name: ${detectionResponse?.name}');
-              debugLog('response path: ${detectionResponse?.path}');
-              debugLog('response length: ${await detectionResponse?.originalImageFile?.length()}');
-              detectionResponse = detectionResponse?.copyWith(
-                name: imageFile.name,
-                path: imageFile.path,
-                originalImageFile: imageFile,
-                originalImageData: imageData,
-              );
-              status.value = ScannerStatus.scanned;
-            }
-          });
+            status.value = ScannerStatus.scanned;
+          }
         }
+
         releaseLog('status: ${status.value}');
         return status.value == ScannerStatus.scanning;
       },

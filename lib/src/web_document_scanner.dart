@@ -11,12 +11,20 @@ class WebDocumentScanner extends StatefulWidget {
   final ScannerController scannerController;
   final bool showDocBorder;
   final Widget? child;
+  final Size? size;
+  final Color detectionBorderColor;
+  final double detectionBorderStrokeWidth;
+  final PaintingStyle detectionBorderPaintingStyle;
 
   const WebDocumentScanner(
     this.scannerController, {
     super.key,
     this.child,
     this.showDocBorder = false,
+    this.size,
+    this.detectionBorderColor = Colors.greenAccent,
+    this.detectionBorderStrokeWidth = 2,
+    this.detectionBorderPaintingStyle = PaintingStyle.stroke,
   });
 
   @override
@@ -27,35 +35,38 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
   @override
   void initState() {
     widget.scannerController.status.value = ScannerStatus.initializing;
-    if (!kIsWeb) disposeError();
-    widget.scannerController.status.addListener(() {
-      debugLog('Scanner Status: ${widget.scannerController.status.value.name}');
-      (widget.scannerController.status.value.dispose ?? false) ? disposeError() : null;
-    });
-    widget.scannerController.rect.addListener(
-      () {
-        debugLog('Rect: ${widget.scannerController.rect.value}');
-        setState(() {});
-      },
-    );
-    if (widget.scannerController.value.isInitialized) {
-      widget.scannerController.status.value = ScannerStatus.initialized;
+    if (!kIsWeb || !widget.scannerController.value.isInitialized) {
+      throwError();
     } else {
-      widget.scannerController.status.value = ScannerStatus.error;
+      widget.scannerController.status.value = ScannerStatus.initialized;
+      widget.scannerController.status.addListener(() {
+        debugLog('Scanner Status: ${widget.scannerController.status.value.name}');
+        (widget.scannerController.status.value.dispose ?? false) ? throwError() : null;
+      });
+      widget.scannerController.rect
+          .addListener(() => setState(() => debugLog('Rect: ${widget.scannerController.rect.value}')));
+      debugLog('isInitialized: ${widget.scannerController.value.isInitialized}');
     }
-    debugLog('isInitialized: ${widget.scannerController.value.isInitialized}');
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) => Center(
+  Widget build(BuildContext context) => Container(
+        alignment: Alignment.center,
+        height: widget.size?.height,
+        width: widget.size?.width,
         child: Stack(
           alignment: Alignment.center,
           children: [
             CameraPreview(widget.scannerController),
-            if (widget.scannerController.rect.value != Rect.zero)
-              DocumentBorderPainterWidget(widget.scannerController.rect.value!),
-            // if (widget.child != null) widget.child!,
+            if (widget.scannerController.status.value == ScannerStatus.scanning)
+              DocumentBorderPainterWidget(
+                rect: widget.scannerController.rect.value,
+                color: widget.detectionBorderColor,
+                strokeWidth: widget.detectionBorderStrokeWidth,
+                paintingStyle: widget.detectionBorderPaintingStyle,
+              ),
+            if (widget.child != null) widget.child!,
           ],
         ),
       );
@@ -69,8 +80,8 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
     super.dispose();
   }
 
-  void disposeError({String? message}) {
-    dispose();
+  void throwError({String? message}) {
+    widget.scannerController.status.value = ScannerStatus.error;
     throw Exception(message ?? Messages.throwError);
   }
 }
