@@ -5,6 +5,7 @@ import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import 'extensions/extensions.dart';
 import 'models/detection_arguments.dart';
 import 'models/detection_model.dart';
 import 'resources/resources.dart';
@@ -13,7 +14,11 @@ import 'utils/logger.dart';
 DetectionModel _document = DetectionModel();
 DetectionArguments _detectionArguments = DetectionArguments();
 
-DetectionModel analyze({required DetectionArguments detectionArguments, required ScanImageFormat image, XFile? file}) {
+DetectionModel analyze({
+  required DetectionArguments detectionArguments,
+  required ScanImageFormat image,
+  XFile? file,
+}) {
   _detectionArguments = detectionArguments;
   releaseLog('Analyze Started - ${image.data?.length}');
   final grayscale = img.grayscale(image);
@@ -24,8 +29,8 @@ DetectionModel analyze({required DetectionArguments detectionArguments, required
   if (result.value2) {
     releaseLog('Image Scanned');
     debugLog('Image Scanned Size: ${_document.originalImageData?.length}');
-    final cropped = _cropImage(image: image, rect: result.value1);
-    final croppedEdges = _cropImage(image: edges, rect: result.value1);
+    final cropped = image.cropImage(result.value1);
+    final croppedEdges = edges.cropImage(result.value1);
     _document = _document.copyWith(
       path: file?.path,
       name: file?.name,
@@ -126,26 +131,4 @@ bool _cornerDetector({required ScanImageFormat image, required int x, required i
     }
   }
   return count >= threshold;
-}
-
-ScanImageFormat _cropImage({required ScanImageFormat image, required Rect rect}) {
-  const int constInt = 20;
-  // final cropped = kIsWeb
-  //     ? image
-  //     : img.copyCrop(
-  //         image,
-  //         x: rect.left.toInt() + constInt,
-  //         y: rect.top.toInt() + constInt,
-  //         width: rect.width.toInt() - constInt,
-  //         height: rect.height.toInt() - constInt,
-  //       );
-  final cropped = img.copyCrop(
-    image,
-    x: rect.left.toInt() + constInt,
-    y: rect.top.toInt() + constInt,
-    width: rect.width.toInt() - constInt,
-    height: rect.height.toInt() - constInt,
-  );
-  debugLog('Scanner Crop');
-  return cropped;
 }

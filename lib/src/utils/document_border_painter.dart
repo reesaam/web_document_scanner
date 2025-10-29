@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../resources/resources.dart';
+import 'logger.dart';
 import 'package_defaults.dart';
 
 class DocumentBorderPainterWidget extends StatefulWidget {
   final Rect rect;
+  final ScannerStatus scannerStatus;
   final Color color;
   final double strokeWidth;
   final PaintingStyle paintingStyle;
   const DocumentBorderPainterWidget({
     super.key,
     required this.rect,
+    required this.scannerStatus,
     required this.color,
     required this.strokeWidth,
     required this.paintingStyle,
@@ -21,7 +25,7 @@ class DocumentBorderPainterWidget extends StatefulWidget {
 
 class _DocumentBorderPainterWidgetState extends State<DocumentBorderPainterWidget> {
   @override
-  Widget build(BuildContext context) => _isDrawing(widget.rect)
+  Widget build(BuildContext context) => _isDrawing(rect: widget.rect, scannerStatus: widget.scannerStatus)
       ? CustomPaint(
           painter: DocumentBorderPainter(
             widget.rect,
@@ -66,5 +70,10 @@ class DocumentBorderPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-bool _isDrawing(Rect rect) => PackageDefaults.drawDocumentBorder && rect != Rect.zero;
+bool _isDrawing({required Rect rect, required ScannerStatus scannerStatus}) {
+  final result = PackageDefaults.drawDocumentBorder && scannerStatus == ScannerStatus.scanning && rect != Rect.zero;
+  releaseLog('DocumentBorderPainter IsDrawing: $result');
+  return result;
+}
+
 Widget get _notAvailable => const SizedBox.shrink();

@@ -11,20 +11,20 @@ class WebDocumentScanner extends StatefulWidget {
   final ScannerController scannerController;
   final bool showDocBorder;
   final Widget? child;
-  final Size? size;
   final Color detectionBorderColor;
   final double detectionBorderStrokeWidth;
   final PaintingStyle detectionBorderPaintingStyle;
+  final BorderRadius? borderRadius;
 
   const WebDocumentScanner(
     this.scannerController, {
     super.key,
     this.child,
     this.showDocBorder = false,
-    this.size,
     this.detectionBorderColor = Colors.greenAccent,
     this.detectionBorderStrokeWidth = 2,
     this.detectionBorderPaintingStyle = PaintingStyle.stroke,
+    this.borderRadius,
   });
 
   @override
@@ -51,24 +51,22 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => Stack(
         alignment: Alignment.center,
-        height: widget.size?.height,
-        width: widget.size?.width,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CameraPreview(widget.scannerController),
-            if (widget.scannerController.status.value == ScannerStatus.scanning)
-              DocumentBorderPainterWidget(
-                rect: widget.scannerController.rect.value,
-                color: widget.detectionBorderColor,
-                strokeWidth: widget.detectionBorderStrokeWidth,
-                paintingStyle: widget.detectionBorderPaintingStyle,
-              ),
-            if (widget.child != null) widget.child!,
-          ],
-        ),
+        children: [
+          AspectRatio(
+            aspectRatio: widget.scannerController.value.aspectRatio,
+            child: CameraPreview(widget.scannerController),
+          ),
+          DocumentBorderPainterWidget(
+            rect: widget.scannerController.rect.value,
+            scannerStatus: widget.scannerController.status.value,
+            color: widget.detectionBorderColor,
+            strokeWidth: widget.detectionBorderStrokeWidth,
+            paintingStyle: widget.detectionBorderPaintingStyle,
+          ),
+          if (widget.child != null) widget.child!,
+        ],
       );
 
   @override

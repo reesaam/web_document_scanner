@@ -1,6 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 
 import 'document_scanner.dart';
 import 'extensions/extensions.dart';
@@ -55,8 +57,11 @@ class ScannerController extends CameraController {
           if (detectionResponse?.isFound ?? false) {
             releaseLog('Document Found');
             releaseLog('Changing Scanner Status');
+
             final imageData = await capturedImage.readAsBytes();
-            final imageFile = XFile.fromData(detectionResponse!.croppedEdgesData!);
+            final imageFile = XFile.fromData(imageData);
+            final croppedData = await imageFile.cropToUintListImage(detectionResponse!.rect);
+
             debugLog('response name: ${detectionResponse?.name}');
             debugLog('response path: ${detectionResponse?.path}');
             debugLog('response length: ${await detectionResponse?.originalImageFile?.length()}');
@@ -65,6 +70,7 @@ class ScannerController extends CameraController {
               path: imageFile.path,
               originalImageFile: imageFile,
               originalImageData: imageData,
+              croppedData: croppedData,
             );
             status.value = ScannerStatus.scanned;
           }
@@ -79,6 +85,7 @@ class ScannerController extends CameraController {
       imageFile: detectionResponse?.originalImageFile,
       imageData: detectionResponse?.originalImageData,
       rect: detectionResponse?.rect,
+      croppedData: detectionResponse?.croppedData,
     );
     return scannerResponse;
   }
