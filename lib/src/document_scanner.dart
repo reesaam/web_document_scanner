@@ -22,15 +22,15 @@ DetectionModel analyze({
   _detectionArguments = detectionArguments;
   releaseLog('Analyze Started - ${image.data?.length}');
   final grayscale = img.grayscale(image);
-  final edges = img.sobel(grayscale);
-  final result = _checkIsDoc(edges);
+  final sobel = img.sobel(grayscale);
+  final result = _checkIsDoc(sobel);
   _document = _document.copyWith(rect: result.value1);
   debugLog('checkIsDoc: ${result.value2}');
   if (result.value2) {
     releaseLog('Image Scanned');
     debugLog('Image Scanned Size: ${_document.originalImageData?.length}');
     final cropped = image.cropImage(result.value1);
-    final croppedEdges = edges.cropImage(result.value1);
+    final croppedEdges = sobel.cropImage(result.value1);
     _document = _document.copyWith(
       path: file?.path,
       name: file?.name,
@@ -39,7 +39,7 @@ DetectionModel analyze({
       grayScaleImageData: grayscale.toUint8List(),
       croppedData: cropped.toUint8List(),
       croppedEdgesData: croppedEdges.toUint8List(),
-      edgesData: edges.toUint8List(),
+      edgesData: sobel.toUint8List(),
       size: Size(image.width.toDouble(), image.height.toDouble()),
     );
   }
@@ -120,7 +120,7 @@ Tuple2<Rect, bool> _checkIsDoc(ScanImageFormat edges) {
 }
 
 bool _cornerDetector({required ScanImageFormat image, required int x, required int y}) {
-  int threshold = 8; // Number of neighbor edges
+  int threshold = 5; // Number of neighbor edges
   int count = 0;
   for (int dy = -1; dy <= 1; dy++) {
     for (int dx = -1; dx <= 1; dx++) {
