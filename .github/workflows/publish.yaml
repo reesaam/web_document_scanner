@@ -30,6 +30,27 @@ jobs:
           git checkout -b "$RELEASE_BRANCH"
           git push origin "$RELEASE_BRANCH"
 
+      - name: Create pull request to main
+        run: |
+          VERSION_TAG=${GITHUB_REF#refs/tags/}
+          RELEASE_BRANCH="releases/$VERSION_TAG"
+          
+          # Install GitHub CLI
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh -y
+          
+          # Authenticate GitHub CLI
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          
+          # Create pull request
+          gh pr create \
+            --base main \
+            --head "$RELEASE_BRANCH" \
+            --title "Release $VERSION_TAG" \
+            --body "Automated release PR for version $VERSION_TAG"
+
       - name: Authenticate with pub.dev
         run: |
           mkdir -p ~/.pub-cache
