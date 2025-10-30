@@ -19,7 +19,7 @@ jobs:
           sdk: stable
 
       - name: Get Dependencies
-        run: dart pub get
+        run: flutter pub get
 
       - name: Create release branch
         run: |
