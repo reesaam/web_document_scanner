@@ -3,7 +3,7 @@ name: Web Document Scanner Package Release
 on:
   push:
     tags:
-      - 'v.*.*.*'
+      - 'v*.*.*'
 
 permissions:
   contents: write
