@@ -1,12 +1,16 @@
-name: publish to pub.dev
+name: Web Document Scanner Package Release
 
 on:
   push:
     tags:
       - 'v.*.*.*'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,45 +22,83 @@ jobs:
         with:
           sdk: stable
 
-      - name: Get Dependencies
-        run: flutter pub get
+      - name: pubspec Version Check
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          FILE_VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+            echo "❌ Tag version ($TAG_VERSION) does not match pubspec.yaml version ($FILE_VERSION)"
+            exit 1
+          fi
 
-      - name: Create release branch
+      - name: ChangeLog Check
+        run: |
+          if ! git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q CHANGELOG.md; then
+            echo "❌ CHANGELOG.md not updated in this release."
+            exit 1
+          fi
+
+      - name: Release Branch Creation
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION_TAG=${GITHUB_REF#refs/tags/}
           RELEASE_BRANCH="releases/$VERSION_TAG"
+
           git checkout -b "$RELEASE_BRANCH"
           git push origin "$RELEASE_BRANCH"
 
-      - name: Create pull request to main
+      - name: Merge Release Branch to Main Feasibility
         run: |
           VERSION_TAG=${GITHUB_REF#refs/tags/}
           RELEASE_BRANCH="releases/$VERSION_TAG"
-          
-          # Install GitHub CLI
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-          sudo apt-add-repository https://cli.github.com/packages
-          sudo apt update
-          sudo apt install gh -y
-          
-          # Authenticate GitHub CLI
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-          
-          # Create pull request
-          gh pr create \
-            --base main \
-            --head "$RELEASE_BRANCH" \
-            --title "Release $VERSION_TAG" \
-            --body "Automated release PR for version $VERSION_TAG"
 
-      - name: Authenticate with pub.dev
+          git fetch origin main
+          git checkout main
+
+          if git merge-tree $(git merge-base origin/main "$RELEASE_BRANCH") origin/main "$RELEASE_BRANCH" | grep -q "<<<<<<<"; then
+            echo "❌ Merge conflicts detected. Deleting release branch."
+            git push origin --delete "$RELEASE_BRANCH"
+            exit 1
+          else
+            echo "✅ Release branch can be merged cleanly into main."
+          fi
+
+#      - name: Code Analyze
+#        run: dart analyze
+
+#      - name: Tests Run
+#        run: dart test
+
+      - name: Check Dry-run Publish
+        run: dart pub publish --dry-run
+
+      - name: pub.dev Authentication
         run: |
           mkdir -p ~/.pub-cache
           echo "$PUB_DEV_TOKEN" > ~/.pub-cache/credentials.json
         env:
           PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
 
-      - name: Publish package
+      - name: Package Publish
         run: dart pub publish
+
+      - name: Create and Merge (squash) Pull Request to main
+        run: |
+          VERSION_TAG=${GITHUB_REF#refs/tags/}
+          RELEASE_BRANCH="releases/$VERSION_TAG"
+
+          sudo apt update
+          sudo apt install gh -y
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+          gh pr create \
+            --base main \
+            --head "$RELEASE_BRANCH" \
+            --title "Release $VERSION_TAG" \
+            --body "Automated release PR for version $VERSION_TAG"
+
+          PR_NUMBER=$(gh pr list --head "$RELEASE_BRANCH" --json number --jq '.[0].number')
+
+          gh pr merge "$PR_NUMBER" --squash --admin
+
