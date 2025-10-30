@@ -25,7 +25,6 @@ A Flutter Package to Scan Document on WEB.
 * [Getting Started](#Getting-Started)
 * [Usage](#Usage)
 * [Options](#Options)
-  * [Some Examples](#Some-Examples)
 * [Docs](#Docs)
 * [About Author](#About-Author)
 * [Packages and Dependencies](#Packages-and-Dependencies)
@@ -54,26 +53,53 @@ dart pub get
 import 'package:web_document_scanner/web_document_scanner.dart';
 ```
 
-Make change in `main` at `'main.dart'`:
+`Controller` must be initialized:
 ```dart
-void main() {
-  GetPutBindings().dependencies();
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      /// You must set these four functions and variables in your Project
-      initialBinding: GetPutBindings(), // Inject all dependencies
-      getPages: GetPutPages.pages, // Add all the pages in GetX context
-      initialRoute: GetPutPages.initialRoute.name, // Set initial route
-      unknownRoute: GetPutPages.unknownRoute, // Set a route for any unknown or undefined route in the app
-    );
+  void _controllerInitialization() async {
+  scannerStatus = ScannerStatus.initializing;
+  final List<CameraDescription> cameras = await availableCameras();
+  if (cameras.isNotEmpty) {
+    final CameraDescription selectedCamera = cameras.first;
+    scannerController = ScannerController(description: selectedCamera);
+    if (scannerController != null) {
+      await scannerController?.initialize();
+    } else {
+      throw Exception(PackageStrings.throwErrorControllerInitialization);
+    }
+  } else {
+    throw Exception(PackageStrings.throwErrorCameraAvailability);
   }
 }
+```
+
+`Controller` Can be Initialized in page initialization OR triggered by a trigger such as tapping on a Button:
+```dart
+  void onInit() {
+  _controllerInitialization();
+  super.initState();
+}
+```
+OR
+```dart
+Button(onPressed: () => _controllerInitialization(), child: Text('Controller Initialization'));
+```
+
+> **_NOTE:_**
+> In either way, `Controller` must be initialized before having `Scanner` Widget.
+
+Using Scanner Widget in your Screen:
+```dart
+WebDocumentScanner(scannerController!);
+```
+
+Controller will return the Captured Document:
+```dart
+ScannerResponse scannerResponse = await scannerController!.startAutoScan();
+```
+
+The `Status` of the `Scanner` can be controlled by setting the `ScannerStatus` of the `Controller`:
+```dart
+ScannerStatus scannerStatus = ScannerStatus.scanning;
 ```
 
 ### You can check the `/example` for a more complete example, more details and further information.
