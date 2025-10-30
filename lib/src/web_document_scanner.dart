@@ -1,6 +1,9 @@
 import 'scanner_controller.dart';
 import 'utils/logger.dart';
 
+/// Main Class of the Package
+/// Using [WebDocumentScanner] may using every feature of this Package
+
 class WebDocumentScanner extends StatefulWidget {
   final ScannerController scannerController;
   final bool showDocBorder;
@@ -75,6 +78,6 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
 
   void throwError({String? message}) {
     widget.scannerController.status.value = ScannerStatus.error;
-    throw Exception(message ?? Messages.throwError);
+    throw Exception(message ?? PackageStrings.throwError);
   }
 }

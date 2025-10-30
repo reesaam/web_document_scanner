@@ -23,7 +23,6 @@ class ScannerPage extends StatefulWidget {
 }
 
 class _ScannerPageState extends State<ScannerPage> {
-
   /// [Variables] to control and modify settings and functionalities
   ScannerController? scannerController;
   ScannerStatus scannerStatus = ScannerStatus.closed;
@@ -31,7 +30,6 @@ class _ScannerPageState extends State<ScannerPage> {
 
   @override
   void initState() {
-
     /// [ScannerController] should be Initialized Before showing it's widget
     /// [ScannerController] will initialize the Camera
     ///     Initialization procedure includes:
@@ -57,12 +55,11 @@ class _ScannerPageState extends State<ScannerPage> {
       if (scannerController != null) {
         await scannerController?.initialize();
       } else {
-        throw Exception('Scanner Controller not Initialized');
+        throw Exception(PackageStrings.throwErrorControllerInitialization);
       }
     } else {
-      throw Exception('Camera is not Available');
+      throw Exception(PackageStrings.throwErrorCameraAvailability);
     }
-
   }
 
   /// [AutoScan] can be triggered in many ways
@@ -79,7 +76,7 @@ class _ScannerPageState extends State<ScannerPage> {
 
   @override
   Widget build(BuildContext context) => Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        Text('Web Document Scanner'),
+        Text(PackageStrings.packageName),
         WebDocumentScanner(scannerController!),
         Image.memory(scannerResponse.imageData!, fit: BoxFit.contain),
         Image.memory(scannerResponse.croppedData!, fit: BoxFit.contain),
@@ -87,8 +84,10 @@ class _ScannerPageState extends State<ScannerPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ElevatedButton(onPressed: () => scannerController!.startAutoScan(), child: Text('Start AutoScan')),
-            ElevatedButton(onPressed: () => scannerController!.stopAutoScan(), child: Text('Stop AutoScan')),
+            ElevatedButton(
+                onPressed: () => scannerController!.startAutoScan(), child: Text(PackageStrings.startAutoScan)),
+            ElevatedButton(
+                onPressed: () => scannerController!.stopAutoScan(), child: Text(PackageStrings.stopAutoScan)),
           ],
         )
       ]);

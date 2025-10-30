@@ -3,6 +3,8 @@ import 'package:image/image.dart' as img;
 
 import '../resources/resources.dart';
 
+/// [extensions] related to [File] functionalities
+
 extension CameraXFileToAppImageConvert on XFile {
   Future<ScanImageFormat?> get toImageFormat async {
     final imageData = await readAsBytes();

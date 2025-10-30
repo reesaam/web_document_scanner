@@ -1,6 +1,9 @@
 import '../scanner_controller.dart';
 import 'logger.dart';
 
+/// This is the Border of the Document in Camera Screen
+/// You may observe the real time document detection in the camera screen
+
 class DocumentBorderPainterWidget extends StatefulWidget {
   final Rect rect;
   final ScannerStatus scannerStatus;

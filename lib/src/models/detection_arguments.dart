@@ -1,4 +1,7 @@
 class DetectionArguments {
+
+  /// Detection will operate depends on these [Arguments]
+
   const DetectionArguments({
     this.streamCaptureDelay = getDefaultStreamCaptureDelay,
     this.luminanceLimit = getDefaultLuminanceLimit,

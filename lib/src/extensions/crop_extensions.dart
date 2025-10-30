@@ -5,6 +5,8 @@ import '../../web_document_scanner.dart';
 import '../resources/resources.dart';
 import '../resources/package_defaults.dart';
 
+/// [extensions] related to [Crop] functionalities
+
 extension CropScanImageFormat on ScanImageFormat {
   ScanImageFormat cropImage(Rect rect) {
     final constCropAmount = PackageDefaults.constCropAmount;

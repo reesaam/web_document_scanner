@@ -4,6 +4,8 @@ import 'package:camera/camera.dart';
 
 import '../resources/resources.dart';
 
+/// [extensions] related to [Image] functionalities
+
 extension ToXFileConvert on ScanImageFormat {
   Uint8List get toUint8List => data!.toUint8List();
   XFile get toXFile => XFile.fromData(Uint8List.fromList(img.encodeJpg(this)));
