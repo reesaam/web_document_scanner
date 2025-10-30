@@ -85,9 +85,9 @@ class _ScannerPageState extends State<ScannerPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () => scannerController!.startAutoScan(), child: Text(PackageStrings.startAutoScan)),
+                onPressed: () => scannerController!.startAutoScan(), child: Text('Start AutoScan')),
             ElevatedButton(
-                onPressed: () => scannerController!.stopAutoScan(), child: Text(PackageStrings.stopAutoScan)),
+                onPressed: () => scannerController!.stopAutoScan(), child: Text('Stop AutoScan')),
           ],
         )
       ]);
