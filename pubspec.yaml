@@ -1,6 +1,6 @@
 name: web_document_scanner
 description: "Web Document Scanner"
-version: 0.0.1
+version: 0.0.2
 homepage: https://resam.site
 repository: https://github.com/reesaam/web_document_scanner.git
 funding:
