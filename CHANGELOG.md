@@ -8,4 +8,5 @@
   - Initial Release
 
 # 0.0.2
+  - Actions
   - Fixes
