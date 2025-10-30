@@ -33,10 +33,14 @@ jobs:
 
       - name: ChangeLog Check
         run: |
-          if ! git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q CHANGELOG.md; then
-            echo "❌ CHANGELOG.md not updated in this release."
+          VERSION_TAG=${GITHUB_REF#refs/tags/v}
+          if grep -q "$VERSION_TAG" CHANGELOG.md; then
+            echo "✅ CHANGELOG.md contains version $VERSION_TAG"
+          else
+            echo "❌ CHANGELOG.md does not mention version $VERSION_TAG"
             exit 1
           fi
+      
 
       - name: Release Branch Creation
         run: |
