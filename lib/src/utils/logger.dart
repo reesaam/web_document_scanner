@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package_defaults.dart';
+import '../resources/package_defaults.dart';
 
 debugLog(String log, {bool disabled = false}) =>
     disabled == true && PackageDefaults.printDebugLogs != true ? null : debugPrint(log);

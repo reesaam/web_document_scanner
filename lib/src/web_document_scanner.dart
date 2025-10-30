@@ -1,10 +1,4 @@
-import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 import 'scanner_controller.dart';
-import 'resources/resources.dart';
-import 'utils/document_border_painter.dart';
 import 'utils/logger.dart';
 
 class WebDocumentScanner extends StatefulWidget {
@@ -56,7 +50,8 @@ class _WebDocumentScannerState extends State<WebDocumentScanner> {
         children: [
           AspectRatio(
             aspectRatio: widget.scannerController.value.aspectRatio,
-            child: CameraPreview(widget.scannerController),
+            child: ClipRRect(
+                borderRadius: widget.borderRadius ?? BorderRadius.zero, child: CameraPreview(widget.scannerController)),
           ),
           DocumentBorderPainterWidget(
             rect: widget.scannerController.rect.value,

@@ -1,8 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 
 import 'document_scanner.dart';
 import 'extensions/extensions.dart';
@@ -11,6 +8,13 @@ import 'models/detection_model.dart';
 import 'models/scanner_response.dart';
 import 'resources/resources.dart';
 import 'utils/logger.dart';
+
+export 'package:flutter/material.dart';
+export 'package:camera/camera.dart';
+export 'package:flutter/foundation.dart';
+export 'resources/resources.dart';
+export 'utils/document_border_painter.dart';
+export 'extensions/extensions.dart';
 
 class ScannerController extends CameraController {
   final DetectionArguments? detectionArguments;
@@ -35,7 +39,7 @@ class ScannerController extends CameraController {
     return super.initialize();
   }
 
-  Future<ScannerResponse?> startAutoScan() async {
+  Future<ScannerResponse> startAutoScan() async {
     releaseLog('AutoScan Started ...');
     status.value = ScannerStatus.scanning;
     DetectionModel? detectionResponse;
@@ -62,6 +66,8 @@ class ScannerController extends CameraController {
             final imageFile = XFile.fromData(imageData);
             final croppedData = await imageFile.cropToUintListImage(detectionResponse!.rect);
 
+            final analyzeData = await XFile.fromData(detectionResponse!.analyzeData!).readAsBytes();
+
             debugLog('response name: ${detectionResponse?.name}');
             debugLog('response path: ${detectionResponse?.path}');
             debugLog('response length: ${await detectionResponse?.originalImageFile?.length()}');
@@ -71,6 +77,7 @@ class ScannerController extends CameraController {
               originalImageFile: imageFile,
               originalImageData: imageData,
               croppedData: croppedData,
+              analyzeData: analyzeData,
             );
             status.value = ScannerStatus.scanned;
           }
@@ -86,6 +93,7 @@ class ScannerController extends CameraController {
       imageData: detectionResponse?.originalImageData,
       rect: detectionResponse?.rect,
       croppedData: detectionResponse?.croppedData,
+      analyzeData: detectionResponse?.analyzeData,
     );
     return scannerResponse;
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import '../../web_document_scanner.dart';
 import '../resources/resources.dart';
-import '../utils/package_defaults.dart';
+import '../resources/package_defaults.dart';
 
 extension CropScanImageFormat on ScanImageFormat {
   ScanImageFormat cropImage(Rect rect) {

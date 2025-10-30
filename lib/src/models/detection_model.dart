@@ -11,12 +11,9 @@ class DetectionModel {
     this.path,
     this.originalImageFile,
     this.originalImageData,
-    this.grayScaleImageData,
-    this.edgesData,
     this.croppedData,
-    this.croppedEdgesData,
+    this.analyzeData,
     this.corners,
-    this.size,
     this.rect = Rect.zero,
     this.documentDetails,
   });
@@ -25,12 +22,9 @@ class DetectionModel {
   final String? path;
   final XFile? originalImageFile;
   final Uint8List? originalImageData;
-  final Uint8List? grayScaleImageData;
-  final Uint8List? edgesData;
   final Uint8List? croppedData;
-  final Uint8List? croppedEdgesData;
+  final Uint8List? analyzeData;
   final List<Offset>? corners;
-  final Size? size;
   final Rect rect;
   final DetectionDocumentDetail? documentDetails;
 
@@ -39,12 +33,9 @@ class DetectionModel {
     String? path,
     XFile? originalImageFile,
     Uint8List? originalImageData,
-    Uint8List? grayScaleImageData,
-    Uint8List? edgesData,
     Uint8List? croppedData,
-    Uint8List? croppedEdgesData,
+    Uint8List? analyzeData,
     List<Offset>? corners,
-    Size? size,
     Rect? rect,
     DetectionDocumentDetail? documentDetails,
   }) =>
@@ -53,12 +44,9 @@ class DetectionModel {
         path: path ?? this.path,
         originalImageFile: originalImageFile ?? this.originalImageFile,
         originalImageData: originalImageData ?? this.originalImageData,
-        grayScaleImageData: grayScaleImageData ?? this.grayScaleImageData,
-        edgesData: edgesData ?? this.edgesData,
         croppedData: croppedData ?? this.croppedData,
-        croppedEdgesData: croppedEdgesData ?? this.croppedEdgesData,
+        analyzeData: analyzeData ?? this.analyzeData,
         corners: corners ?? this.corners,
-        size: size ?? this.size,
         rect: rect ?? this.rect,
         documentDetails: documentDetails ?? this.documentDetails,
       );

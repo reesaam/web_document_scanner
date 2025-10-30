@@ -9,6 +9,7 @@ class ScannerResponse {
     this.imageFile,
     this.imageData,
     this.croppedData,
+    this.analyzeData,
     this.rect,
   });
 
@@ -16,5 +17,6 @@ class ScannerResponse {
   final XFile? imageFile;
   final Uint8List? imageData;
   final Uint8List? croppedData;
+  final Uint8List? analyzeData;
   final Rect? rect;
 }

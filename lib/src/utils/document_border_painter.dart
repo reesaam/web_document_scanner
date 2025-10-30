@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-
-import '../resources/resources.dart';
+import '../scanner_controller.dart';
 import 'logger.dart';
-import 'package_defaults.dart';
 
 class DocumentBorderPainterWidget extends StatefulWidget {
   final Rect rect;
