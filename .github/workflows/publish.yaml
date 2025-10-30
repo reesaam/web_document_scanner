@@ -21,6 +21,15 @@ jobs:
       - name: Get Dependencies
         run: dart pub get
 
+      - name: Create release branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          VERSION_TAG=${GITHUB_REF#refs/tags/}
+          RELEASE_BRANCH="releases/$VERSION_TAG"
+          git checkout -b "$RELEASE_BRANCH"
+          git push origin "$RELEASE_BRANCH"
+
       - name: Authenticate with pub.dev
         run: |
           mkdir -p ~/.pub-cache
