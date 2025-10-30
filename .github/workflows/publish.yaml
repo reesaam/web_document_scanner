@@ -20,7 +20,12 @@ jobs:
       - name: Set up Dart
         uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
+          sdk: '3.8.1' # stable
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.8' #'stable'
 
       - name: Clean Build
         run: flutter clean
