@@ -13,7 +13,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  web_document_scanner: 0.0.2
+#  web_document_scanner: 0.0.2
+  web_document_scanner:
+    path: ../
 
 dev_dependencies:
   lints: ^4.0.0
