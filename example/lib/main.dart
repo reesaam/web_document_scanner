@@ -37,7 +37,7 @@ class _ScannerPageState extends State<ScannerPage> {
     ///       - Variables Assignments (Status, Response, Detection Model, DetectionArguments, ...)
     ///       - Setting Controllers
 
-    _cameraInitialization();
+    _controllerInitialization();
 
     /// [startAutoScan] of [ScannerController] can be either here to start by page initialization
     /// OR
@@ -46,7 +46,7 @@ class _ScannerPageState extends State<ScannerPage> {
     super.initState();
   }
 
-  void _cameraInitialization() async {
+  void _controllerInitialization() async {
     scannerStatus = ScannerStatus.initializing;
     final List<CameraDescription> cameras = await availableCameras();
     if (cameras.isNotEmpty) {
