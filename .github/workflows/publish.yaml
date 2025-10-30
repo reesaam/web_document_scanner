@@ -22,6 +22,12 @@ jobs:
         with:
           sdk: stable
 
+      - name: Clean Build
+        run: flutter clean
+
+      - name: Get dependencies
+        run: flutter pub get
+
       - name: pubspec Version Check
         run: |
           TAG_VERSION=${GITHUB_REF#refs/tags/v}
@@ -40,7 +46,6 @@ jobs:
             echo "❌ CHANGELOG.md does not mention version $VERSION_TAG"
             exit 1
           fi
-      
 
       - name: Release Branch Creation
         run: |
