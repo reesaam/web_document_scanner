@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -87,17 +87,21 @@ jobs:
       - name: Check Dry-run Publish
         run: dart pub publish --dry-run
 
-      - name: pub.dev Authentication
-        run: |
-          mkdir -p ~/.pub-cache
-          echo "$PUB_DEV_TOKEN" > ~/.pub-cache/credentials.json
+#      - name: pub.dev Authentication
+#        run: |
 #          echo "$PUB_DEV_TOKEN" > ~/.pub-cache/pub-credentials.json
-#          echo "$PUB_DEV_TOKEN" > ~/.emulator_console_auth_token.json
-        env:
-          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
+#        env:
+#          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
+#
+#      - name: Package Publish
+#        run: dart pub publish --force
 
       - name: Package Publish
-        run: dart pub publish --force
+        uses: k-paxian/dart-package-publisher@v1.5.1
+        with:
+          credentialJson: ${{ secrets.PUB_DEV_TOKEN }}
+          flutter: true
+          skipTests: true
 
       - name: Create and Merge (squash) Pull Request to main
         run: |
