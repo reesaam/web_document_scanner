@@ -90,7 +90,7 @@ jobs:
       - name: pub.dev Authentication
         run: |
           mkdir -p ~/.pub-cache
-          echo "$PUB_DEV_TOKEN" > ~/.pub-cache/credentials.json
+          echo "$PUB_DEV_TOKEN" > ~/.emulator_console_auth_token.json
         env:
           PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
 
