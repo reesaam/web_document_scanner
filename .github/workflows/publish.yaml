@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -99,7 +99,7 @@ jobs:
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
-          credentialJson: ${{ secrets.PUB_DEV_TOKEN }}
+          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
           flutter: true
           skipTests: true
 
