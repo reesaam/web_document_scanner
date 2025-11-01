@@ -92,7 +92,7 @@ jobs:
           mkdir -p ~/.dart
           echo '${{ secrets.CREDENTIALS_JSON }}' > ~/.dart/pub-credentials.json
         env:
-          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
+          PUB_DEV_TOKEN: ${{ secrets.CREDENTIALS_JSON }}
 
       - name: Package Publish
         run: dart pub publish --force
