@@ -52,6 +52,32 @@ jobs:
             exit 1
           fi
 
+#      - name: Code Analyze
+#        run: dart analyze
+
+#      - name: Tests Run
+#        run: dart test
+
+      - name: Check Dry-run Publish
+        run: dart pub publish --dry-run
+
+#      - name: pub.dev Authentication
+#        run: |
+#          mkdir -p ~/.dart
+#          echo '${{ secrets.CREDENTIALS_JSON }}' > ~/.dart/pub-credentials.json
+#        env:
+#          PUB_DEV_TOKEN: ${{ secrets.CREDENTIALS_JSON }}
+#
+#      - name: Package Publish
+#        run: dart pub publish --force
+
+      - name: Package Publish
+        uses: k-paxian/dart-package-publisher@v1.5.1
+        with:
+          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+          flutter: true
+          skipTests: true
+
       - name: Release Branch Creation
         run: |
           git config user.name "github-actions[bot]"
@@ -77,32 +103,6 @@ jobs:
           else
             echo "✅ Release branch can be merged cleanly into main."
           fi
-
-#      - name: Code Analyze
-#        run: dart analyze
-
-#      - name: Tests Run
-#        run: dart test
-
-      - name: Check Dry-run Publish
-        run: dart pub publish --dry-run
-
-      - name: pub.dev Authentication
-        run: |
-          mkdir -p ~/.dart
-          echo '${{ secrets.CREDENTIALS_JSON }}' > ~/.dart/pub-credentials.json
-        env:
-          PUB_DEV_TOKEN: ${{ secrets.CREDENTIALS_JSON }}
-
-      - name: Package Publish
-        run: dart pub publish --force
-
-#      - name: Package Publish
-#        uses: k-paxian/dart-package-publisher@v1.5.1
-#        with:
-#          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-#          flutter: true
-#          skipTests: true
 
       - name: Create and Merge (squash) Pull Request to main
         run: |
