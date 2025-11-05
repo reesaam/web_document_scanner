@@ -9,3 +9,6 @@
 
 # v0.0.2
   - Fixes
+
+# v0.0.3
+- CI/CD Implementation, Check and Test
