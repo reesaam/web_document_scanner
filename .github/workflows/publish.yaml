@@ -79,7 +79,7 @@ jobs:
 
       # k-paxian/dart-package-publisher@v1.5.1
       - name: Package Publish
-        uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+        uses: .github/workflows/publish.yml@v1
         with:
           environment: PUB_DEV
           credentialJson: ${{ secrets.GITHUB_TOKEN }}
