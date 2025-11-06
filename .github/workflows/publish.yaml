@@ -83,12 +83,13 @@ jobs:
 #        run: dart pub publish --force
 #        env:
 #          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
-      #          credentialJson: ${{ secrets.PUB_DEV }}
+      # credentialJson: ${{ secrets.PUB_DEV }}
+      # accessToken: ${{ secrets.ACCESS_TOKEN }}
+      # refreshToken: ${{ secrets.REFRESH_TOKEN }}
       # k-paxian/dart-package-publisher@v1.5.1
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
-          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
           accessToken: ${{ secrets.ACCESS_TOKEN }}
           refreshToken: ${{ secrets.REFRESH_TOKEN }}
           flutter: true
