@@ -87,7 +87,9 @@ jobs:
       # k-paxian/dart-package-publisher@v1.5.1
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
-#        with:
+        env:
+          PUB_DEV: ${{ secrets.PUB_DEV }}
+      #        with:
 #          accessToken: "${{ secrets.ACCESS_TOKEN }}",
 #          refreshToken: "${{ secrets.REFRESH_TOKEN }}",
 #          flutter: true
