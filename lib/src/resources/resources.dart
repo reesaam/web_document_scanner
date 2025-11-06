@@ -5,5 +5,5 @@ library;
 
 export 'status.dart';
 export 'types.dart';
-export 'messages.dart';
+export 'package_strings.dart';
 export 'package_defaults.dart';

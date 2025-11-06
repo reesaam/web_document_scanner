@@ -1,6 +1,6 @@
 
 <p align="center">
-  Getx Dependencies Binding Annotation Generator
+  Web Document Scanner
 </p>
 <p align="center">
   <!-- Pub Version -->
