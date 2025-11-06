@@ -65,15 +65,19 @@ jobs:
       - name: Check Dry-run Publish
         run: dart pub publish --dry-run
 
-      - name: pub.dev Authentication
-        run: |
-          mkdir -p ~/.dart
-          echo '${{ secrets.GITHUB_TOKEN }}' > ~/.dart/pub-credentials.json
-        env:
-          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
+#      - name: pub.dev Authentication
+#        run: |
+#          mkdir -p ~/.dart
+#          echo '${{ secrets.GITHUB_TOKEN }}' > ~/.dart/pub-credentials.json
+#        env:
+#          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package Publish
         run: dart pub publish --force
+        with:
+            credentialJson: ${{ secrets.GITHUB_TOKEN }}
+            flutter: true
+            skipTests: true
 
 #      - name: Package Publish
 #        uses: k-paxian/dart-package-publisher@v1.5.1
