@@ -16,6 +16,7 @@ jobs:
       pull-requests: write
 
     runs-on: ubuntu-latest
+    environment: PUB_DEV
 
     steps:
       - name: Checkout code
@@ -124,6 +125,13 @@ jobs:
           echo "Credentials file contents:"
           cat ~/.pub-cache/credentials.json | jq
 
+      - name: Debug secrets
+        run: |
+          echo "Access token length: ${#ACCESS_TOKEN}"
+          echo "Refresh token length: ${#REFRESH_TOKEN}"
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
 
       - name: Publish package
         run: dart pub publish --force
