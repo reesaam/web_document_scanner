@@ -87,11 +87,11 @@ jobs:
       # k-paxian/dart-package-publisher@v1.5.1
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
-        with:
-          accessToken: "${{ secrets.ACCESS_TOKEN }}",
-          refreshToken: "${{ secrets.REFRESH_TOKEN }}",
-          flutter: true
-          skipTests: true
+#        with:
+#          accessToken: "${{ secrets.ACCESS_TOKEN }}",
+#          refreshToken: "${{ secrets.REFRESH_TOKEN }}",
+#          flutter: true
+#          skipTests: true
 
       - name: Release Branch Creation
         run: |
