@@ -89,8 +89,6 @@ jobs:
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
           credentialJson: ${{ secrets.PUB_DEV }}
-          accessToken: "${{ secrets.ACCESS_TOKEN }}",
-          refreshToken: "${{ secrets.REFRESH_TOKEN }}",
           flutter: true
           skipTests: true
 
