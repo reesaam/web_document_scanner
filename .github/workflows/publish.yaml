@@ -81,7 +81,6 @@ jobs:
             "accessToken":"${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
             "refreshToken":"${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
             "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
-            "expiration": ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
           }
           EOF
         env:
