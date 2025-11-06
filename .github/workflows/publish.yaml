@@ -72,17 +72,18 @@ jobs:
 #        env:
 #          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package Publish
-        run: dart pub publish --force
-        env:
-          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
-
 #      - name: Package Publish
-#        uses: k-paxian/dart-package-publisher@v1.5.1
-#        with:
-#          credentialJson: ${{ secrets.GITHUB_TOKEN }}
-#          flutter: true
-#          skipTests: true
+#        run: dart pub publish --force
+#        env:
+#          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package Publish
+        uses: k-paxian/dart-package-publisher@v1.5.1
+        with:
+          environment: PUB_DEV
+          credentialJson: ${{ secrets.GITHUB_TOKEN }}
+          flutter: true
+          skipTests: true
 
       - name: Release Branch Creation
         run: |
