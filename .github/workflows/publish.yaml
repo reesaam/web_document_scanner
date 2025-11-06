@@ -119,6 +119,12 @@ jobs:
           }
           EOF
 
+      - name: Confirm credentials file
+        run: |
+          echo "Credentials file contents:"
+          cat ~/.pub-cache/credentials.json | jq
+
+
       - name: Publish package
         run: dart pub publish --force
 
