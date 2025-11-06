@@ -72,6 +72,22 @@ jobs:
 #        env:
 #          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: pub.dev Authentication
+        run: |
+          mkdir -p ~/.dart
+#          echo '${{ secrets.GITHUB_TOKEN }}' > ~/.dart/pub-credentials.json
+          cat <<EOF > ~/.dart/pub-credentials.json
+          {
+            "accessToken":"${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
+            "refreshToken":"${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
+            "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
+            "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
+            "expiration": ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+          }
+          EOF
+        env:
+          PUB_DEV: ${{ secrets.PUB_DEV }}
+
 #      - name: Package Publish
 #        run: dart pub publish --force
 #        env:
@@ -81,8 +97,10 @@ jobs:
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
-          environment: PUB_DEV
+          force: true
           credentialJson: ${{ secrets.PUB_DEV }}
+          accessToken: "${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
+          refreshToken: "${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
           flutter: true
           skipTests: true
 
