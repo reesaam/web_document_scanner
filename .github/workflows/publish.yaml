@@ -78,11 +78,11 @@ jobs:
 #          echo '${{ secrets.GITHUB_TOKEN }}' > ~/.dart/pub-credentials.json
           cat <<EOF > ~/.pub-cache/credentials.json
           {
-            "accessToken": "${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
-            "refreshToken": "${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
+            "accessToken":"${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
+            "refreshToken":"${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
             "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
-            "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
-            "expiration": ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+            "scopes":[ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
+            "expiration":${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
           }
           EOF
         env:
