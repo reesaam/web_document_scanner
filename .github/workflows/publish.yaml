@@ -87,6 +87,16 @@ jobs:
       # accessToken: ${{ secrets.ACCESS_TOKEN }}
       # refreshToken: ${{ secrets.REFRESH_TOKEN }}
       # k-paxian/dart-package-publisher@v1.5.1
+
+      - name: Debug secrets
+        run: |
+          echo "Access token length: ${#ACCESS_TOKEN}"
+          echo "Refresh token length: ${#REFRESH_TOKEN}"
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+
+
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
