@@ -74,10 +74,8 @@ jobs:
 
       - name: Package Publish
         run: dart pub publish --force
-        with:
-            credentialJson: ${{ secrets.GITHUB_TOKEN }}
-            flutter: true
-            skipTests: true
+        env:
+          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
 
 #      - name: Package Publish
 #        uses: k-paxian/dart-package-publisher@v1.5.1
