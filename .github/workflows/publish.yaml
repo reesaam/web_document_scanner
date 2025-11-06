@@ -88,8 +88,8 @@ jobs:
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
-          accessToken: "${{ secrets.ACCESS_TOKEN }}",
-          refreshToken: "${{ secrets.REFRESH_TOKEN }}",
+          accessToken: "${{ secrets.ACCESS_TOKEN }}"
+          refreshToken: "${{ secrets.REFRESH_TOKEN }}"
           flutter: true
           skipTests: true
 
