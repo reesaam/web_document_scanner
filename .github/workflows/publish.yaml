@@ -97,13 +97,30 @@ jobs:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
 
 
-      - name: Package Publish
-        uses: k-paxian/dart-package-publisher@v1.5.1
-        with:
-          accessToken: ${{ secrets.ACCESS_TOKEN }}
-          refreshToken: ${{ secrets.REFRESH_TOKEN }}
-          flutter: true
-          skipTests: true
+#      - name: Package Publish
+#        uses: k-paxian/dart-package-publisher@v1.5.1
+#        with:
+#          accessToken: ${{ secrets.ACCESS_TOKEN }}
+#          refreshToken: ${{ secrets.REFRESH_TOKEN }}
+#          flutter: true
+#          skipTests: true
+
+      - name: Inject pub.dev credentials
+        run: |
+          mkdir -p ~/.pub-cache
+          cat > ~/.pub-cache/credentials.json <<EOF
+          {
+            "accessToken":"${{ secrets.ACCESS_TOKEN }}",
+            "refreshToken":"${{ secrets.REFRESH_TOKEN }}",
+            "idToken":"",
+            "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
+            "scopes":["https://www.googleapis.com/auth/userinfo.email","openid"],
+            "expiration":9999999999999
+          }
+          EOF
+
+      - name: Publish package
+        run: dart pub publish --force
 
       - name: Release Branch Creation
         run: |
