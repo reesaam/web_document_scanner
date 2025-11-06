@@ -85,8 +85,12 @@ jobs:
             "expiration":${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
           }
           EOF
-        env:
-          PUB_DEV: ${{ secrets.PUB_DEV }}
+#        env:
+#          PUB_DEV: ${{ secrets.PUB_DEV }}
+
+      - name: Run Login
+        run: |
+          sh ./pub_login.sh
 
       - name: Package Publish
         run: dart pub publish --force
