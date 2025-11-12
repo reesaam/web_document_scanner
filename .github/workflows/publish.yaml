@@ -73,22 +73,6 @@ jobs:
 #        env:
 #          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: pub.dev Authentication
-#        run: |
-#          mkdir -p ~/.dart
-#          echo '${{ secrets.GITHUB_TOKEN }}' > ~/.dart/pub-credentials.json
-#        env:
-#          PUB_DEV: ${{ secrets.PUB_DEV }}
-
-#      - name: Package Publish
-#        run: dart pub publish --force
-#        env:
-#          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
-      # credentialJson: ${{ secrets.PUB_DEV }}
-      # accessToken: ${{ secrets.ACCESS_TOKEN }}
-      # refreshToken: ${{ secrets.REFRESH_TOKEN }}
-      # k-paxian/dart-package-publisher@v1.5.1
-
       - name: Debug secrets
         run: |
           echo "Access token length: ${#ACCESS_TOKEN}"
@@ -100,40 +84,16 @@ jobs:
       - name: Package Publish
         uses: k-paxian/dart-package-publisher@v1.5.1
         with:
+#          credentialJson: ${{ secrets.PUB_DEV }}
           accessToken: ${{ secrets.ACCESS_TOKEN }}
           refreshToken: ${{ secrets.REFRESH_TOKEN }}
           flutter: true
           skipTests: true
-
-#      - name: Inject pub.dev credentials
-#        run: |
-#          mkdir -p ~/.pub-cache
-#          cat > ~/.pub-cache/credentials.json <<EOF
-#          {
-#            "accessToken":"${{ secrets.ACCESS_TOKEN }}",
-#            "refreshToken":"${{ secrets.REFRESH_TOKEN }}",
-#            "idToken":"",
-#            "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
-#            "scopes":["https://www.googleapis.com/auth/userinfo.email","openid"],
-#            "expiration":9999999999999
-#          }
-#          EOF
-#
-#      - name: Confirm credentials file
-#        run: |
-#          echo "Credentials file contents:"
-#          cat ~/.pub-cache/credentials.json | jq
-#
-#      - name: Debug secrets
-#        run: |
-#          echo "Access token length: ${#ACCESS_TOKEN}"
-#          echo "Refresh token length: ${#REFRESH_TOKEN}"
-#        env:
-#          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-#          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
 #
 #      - name: Publish package
 #        run: dart pub publish --force
+#        env:
+#          PUB_DEV: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release Branch Creation
         run: |
